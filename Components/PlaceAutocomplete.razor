@@ -1,5 +1,47 @@
-﻿<h3>PlaceAutocomplete</h3>
+﻿@using System.Text.Json
+@using System.Text.Json.Nodes
+@namespace gcp.client.integrations.poc.Components
 
-@code {
+@inject IJSRuntime JSRuntime
+
+<title>Place Autocomplete Address Form</title>
+
+
+<form id="address-form" action="" method="get" autocomplete="off">
+    <p class="title">Sample Address</p>
+    <label class="full-field">
+        <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
+        <span class="form-label">Risk Address</span>
+        <input id="risk-address"
+               name="risk-address"
+               required
+               autocomplete="off"/>
+    </label>
+</form>
+
+
+@functions {
     
+    
+    // GCP DOCS --> https://developers.google.com/maps/documentation/javascript/place-autocomplete?hl=es-419
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<string>("initAutocomplete");
+        }
+    }
+    
+    [JSInvokable]
+    public static void AddressChanged(JsonObject address)
+    {
+        var addressComponents = address["address_components"];
+        var geometry = address["geometry"];
+    }
+
+
+    
+    
+
 }
